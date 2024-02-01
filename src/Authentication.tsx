@@ -95,7 +95,7 @@ function validatePassword(password: string) {
 	const regexResult = passowrdRegex.test(password);
 	if (!regexResult)
 		errorMessages.push(
-			"Password must contain at least 1 number and a special characters"
+			"Password must contain at 6-16 numbers and at least one special characters"
 		);
 
 	return {
@@ -118,4 +118,18 @@ export function validateLoginInputs(rawInputs: RawLoginInputs) {
 		isPasswordValidated: passwordValidation.isValidated,
 		errors: errors,
 	} as LoginValidationResult;
+}
+
+export function login(username: string, password: string): UserAuthentication {
+	if (username !== "admin@admin.com" && password !== "123456@") {
+		return {
+			isLogged: false,
+			username: "",
+		};
+	} else {
+		return {
+			isLogged: true,
+			username: username,
+		};
+	}
 }

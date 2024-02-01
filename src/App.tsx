@@ -38,23 +38,33 @@ function App() {
 	return (
 		<main>
 			<Auth.UserAuthContext.Provider value={auth ? auth : Auth.newAuth()}>
-				<ScreensManager />
+				<ScreensManager {...({ setUserAuth: updateUserAuth } as AuthProps)} />
 			</Auth.UserAuthContext.Provider>
 		</main>
 	);
 }
 
-function ScreensManager() {
+interface AuthProps {
+	setUserAuth: Function;
+}
+
+function ScreensManager(props: AuthProps) {
 	const userAuth = useContext(Auth.UserAuthContext);
 
 	if (userAuth) console.log("screen manager loads game");
 	else console.log("screen manager loads login screen");
 	return (
-		<>{!Auth.isLoggedIn(userAuth) ? <LoginScreen /> : <CookieClicker />}</>
+		<>
+			{!Auth.isLoggedIn(userAuth) ? (
+				<LoginScreen {...(props as AuthProps)} />
+			) : (
+				<CookieClicker />
+			)}
+		</>
 	);
 }
 
-function LoginScreen() {
+function LoginScreen(props: AuthProps) {
 	const [loginValidation, setLoginValidation] = useState(
 		Auth.validateLoginInputs({
 			username: "",
@@ -82,6 +92,15 @@ function LoginScreen() {
 		});
 
 		setLoginValidation(validationResult);
+
+		if (
+			validationResult.isUsernameValidated &&
+			validationResult.isPasswordValidated
+		) {
+			const loginResult = Auth.login(username, password);
+			if (loginResult.isLogged) Auth.saveUserAuthToStorage(loginResult);
+			props.setUserAuth(loginResult);
+		}
 	};
 
 	return (
