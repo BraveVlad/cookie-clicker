@@ -75,17 +75,14 @@ function LoginScreen(props: AuthProps) {
 	const login: FormEventHandler = (event) => {
 		event.preventDefault();
 		const form = event.target as HTMLFormElement;
+		const formData = new FormData(form);
 
-		const usernameInputView = form.querySelector(
-			"#form-login__email"
-		) as HTMLInputElement;
+		const username = formData.get("form-login__email")?.toString();
+		const password = formData.get("form-login__password")?.toString();
 
-		const passwordInputView = form.querySelector(
-			"#form-login__password"
-		) as HTMLInputElement;
+		if (username === undefined || password === undefined)
+			throw new Error("Couldn't fetch login form data");
 
-		const username = usernameInputView.value;
-		const password = passwordInputView.value;
 		const validationResult = Auth.validateLoginInputs({
 			username: username,
 			password: password,
