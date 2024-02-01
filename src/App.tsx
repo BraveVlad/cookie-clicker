@@ -120,7 +120,7 @@ function LoginScreen(props: AuthProps) {
 				</fieldset>
 
 				<fieldset>
-					{loginValidation.isUsernameValidated ? (
+					{loginValidation.isPasswordValidated ? (
 						""
 					) : (
 						<div className="form-login__input-error">⚠️</div>
